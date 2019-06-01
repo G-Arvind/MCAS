@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:orientation="vertical"
+    tools:context=".Drive">
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/img"
+        android:layout_marginTop="-110dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/biikeride"
+        />
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/img1"
+        android:visibility="invisible"
+        android:layout_marginTop="-510dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/calldoctor"
+        />
+
+    <TextView
+        android:id="@+id/drivemsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-105dp"
+        android:fontFamily="@font/monts"
+        android:gravity="center"
+        android:text="Drive Safe !"
+        android:textColor="#4d4f53"
+        android:textSize="20dp" />
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:id="@+id/txtCurrentSpeed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="000.0 Kms/hour"
+        android:fontFamily="@font/monts"
+        android:gravity="center"
+        android:textColor="#4d4f53"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+
+
+    <Button
+        android:id="@+id/drivestop"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/buttonshape"
+        android:fontFamily="@font/monts"
+        android:shadowColor="#A8734A"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"
+        android:text="Stop Driving"
+        android:textColor="#FFFFFF"
+        android:textSize="20dp" />
+</LinearLayout>

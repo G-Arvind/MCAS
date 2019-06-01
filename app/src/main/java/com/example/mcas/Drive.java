@@ -12,6 +12,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +30,11 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,9 +47,9 @@ import java.util.Map;
 
 import pl.droidsonroids.gif.GifImageView;
 
-public class Drive extends AppCompatActivity implements IBaseGpsListener{
+public class Drive extends AppCompatActivity implements IBaseGpsListener {
 
-    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
 
     Button drivestop;
 
@@ -51,9 +57,14 @@ public class Drive extends AppCompatActivity implements IBaseGpsListener{
     static GifImageView img1;
     static TextView drivemsg;
 
+    static String latval,lanval;
+
     private SensorManager sensorManager;
     private Sensor gyroSensor, accSensor;
-    private boolean isGyro,isAccle;
+    private boolean isGyro, isAccle;
+    Double lat,lan;
+
+    private FusedLocationProviderClient client;
 
     float[][] data = new float[51][3];
     int data_length = 0;
@@ -65,15 +76,49 @@ public class Drive extends AppCompatActivity implements IBaseGpsListener{
     public static IResult mResultCallback = null;
     public static VolleyService mVolleyService;
 
+    public static String loggedIn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drive);
-        drivestop=(Button)findViewById(R.id.drivestop);
-        img=(GifImageView)findViewById(R.id.img);
-        img1=(GifImageView)findViewById(R.id.img1);
-        drivemsg=(TextView)findViewById(R.id.drivemsg);
+        drivestop = (Button) findViewById(R.id.drivestop);
+        img = (GifImageView) findViewById(R.id.img);
+        img1 = (GifImageView) findViewById(R.id.img1);
+        drivemsg = (TextView) findViewById(R.id.drivemsg);
+
+        client = LocationServices.getFusedLocationProviderClient(this);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        client.getLastLocation().addOnSuccessListener(Drive.this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+
+                lat=location.getLatitude();
+                lan=location.getLongitude();
+
+                latval=lat.toString();
+                lanval=lan.toString();
+
+            }
+        });
+
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        loggedIn = sharedPref.getString("user_id", "no");
+
+
+
+         //Toast.makeText(getApplicationContext(),"hi"+stringLongitude,Toast.LENGTH_LONG).show();
 
         drivestop.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -315,7 +360,7 @@ public class Drive extends AppCompatActivity implements IBaseGpsListener{
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     SmsManager smsManager = SmsManager.getDefault();
-                    smsManager.sendTextMessage("919220592205", null, "7MQH4 id:1 lat:13.0067 lng:80.2206", null, null);
+                    smsManager.sendTextMessage("919220592205", null, "7MQH4 id:"+loggedIn+" lat:"+latval+" lng:"+lanval+"", null, null);
                     Toast.makeText(getApplicationContext(), "SMS sent.",
                             Toast.LENGTH_LONG).show();
                 } else {
@@ -483,9 +528,9 @@ public class Drive extends AppCompatActivity implements IBaseGpsListener{
             protected Map<String, String> getParams() {
                 // Posting parameters to login url
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("user_id", "1");
-                params.put("lat", "13.00067");
-                params.put("lng", "80.2206");
+                params.put("user_id", loggedIn);
+                params.put("lat", latval);
+                params.put("lng", lanval);
                 return params;
             }
 

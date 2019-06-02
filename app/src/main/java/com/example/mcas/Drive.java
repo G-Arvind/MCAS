@@ -9,6 +9,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.preference.PreferenceManager;
@@ -104,11 +105,20 @@ public class Drive extends AppCompatActivity implements IBaseGpsListener {
             @Override
             public void onSuccess(Location location) {
 
-                lat=location.getLatitude();
-                lan=location.getLongitude();
+                if (location != null) {
 
-                latval=lat.toString();
-                lanval=lan.toString();
+                    lat = location.getLatitude();
+                    lan = location.getLongitude();
+
+                    latval = lat.toString();
+                    lanval = lan.toString();
+                }
+                else {
+
+                    latval="3.0067";
+                    lanval="80.2206";
+
+                }
 
             }
         });
